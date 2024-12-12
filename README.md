@@ -38,3 +38,30 @@ Combines content-based, collaborative filtering, and cold-start methods for impr
 
 - `GET /feed?username=<username>`:  
   Recommends videos based on user preferences only.
+
+## Usage Guidelines
+
+To get started with the project, follow the steps below:
+
+1. **Clone the repository:**
+
+   Use the following command to clone the repository to your local machine:
+
+   ```bash
+   git clone https://github.com/ashutoshkorde777/Video_Recommendation_Algorithm.git
+Install dependencies:
+
+Navigate to the project directory and install the required dependencies from the requirements.txt file:
+
+```bash
+cd Video_Recommendation_Algorithm
+pip install -r requirements.txt
+```
+ **Run the application:**
+
+Once the dependencies are installed, run the application using the command:
+
+```bash
+python app.py
+```
+The application will start, and you can begin using the video recommendation system.
