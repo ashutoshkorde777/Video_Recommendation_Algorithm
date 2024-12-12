@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Recommendation System</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f7fc;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 50%;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            margin-top: 50px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2rem;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #555;
+        }
+        input[type="text"], select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+            color: #555;
+        }
+        input[type="text"]:focus, select:focus {
+            border-color: #4CAF50;
+            outline: none;
+        }
+        button {
+            padding: 14px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1.1rem;
+            width: 100%;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .results {
+            margin-top: 30px;
+        }
+        .video-card {
+            background-color: #fff;
+            padding: 20px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .video-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .video-card strong {
+            display: block;
+            font-size: 1.2rem;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .video-card .category-name {
+            font-size: 1rem;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Video Recommendation System</h1>
+        <form id="recommendation-form">
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="mood">Mood:</label>
+                <select id="mood" name="mood">
+                    <option value="happy">Happy</option>
+                    <option value="sad">Sad</option>
+                    <option value="neutral">Neutral</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="category_id">Category:</label>
+                <input type="text" id="category_id" name="category_id" placeholder="Optional">
+            </div>
+            <button type="submit">Get Recommendations</button>
+        </form>
+
+        <div class="results" id="results"></div>
+    </div>
+
+    <script>
+        document.getElementById('recommendation-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Get user input values
+            const username = document.getElementById('username').value;
+            const mood = document.getElementById('mood').value;
+            const category_id = document.getElementById('category_id').value;
+
+            // Make an API call to the Flask backend
+            const response = await fetch(`http://127.0.0.1:5000/feed?username=${username}&mood=${mood}&category_id=${category_id}`);
+            
+            if (!response.ok) {
+                const errorMessage = await response.json();
+                document.getElementById('results').innerHTML = `<p style="color: red;">Error: ${errorMessage.error}</p>`;
+                return;
+            }
+
+            // Parse the response
+            const recommendations = await response.json();
+
+            // Display the recommendations
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '';
+
+            if (recommendations.length === 0) {
+                resultsDiv.innerHTML = '<p>No recommendations found.</p>';
+                return;
+            }
+
+            recommendations.forEach(post => {
+                const videoCard = document.createElement('div');
+                videoCard.classList.add('video-card');
+                videoCard.innerHTML = `<strong>${post.title}</strong><div class="category-name">Category: ${post.category_name}</div>`;
+                resultsDiv.appendChild(videoCard);
+            });
+        });
+    </script>
+</body>
+</html>
