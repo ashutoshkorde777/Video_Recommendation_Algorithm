@@ -70,6 +70,10 @@ class Recommender:
             index='User ID', columns='Post ID', values='Rating Percent', aggfunc=np.mean
         ).fillna(0)
 
+        # Check if user_id exists in ratings_matrix
+        if user_id not in ratings_matrix.index:
+            return []  # Or handle the error as needed
+
         # Locate the user's feature vector
         user_idx = ratings_matrix.index.get_loc(user_id)
         user_vector = self.svd_matrix.iloc[user_idx]
@@ -143,7 +147,8 @@ def get_feed():
     - mood: used for cold-start recommendations
     - category_id: used for category-based recommendations
     """
-    username = request.args.get('username')
+    username = request.args.get('username').strip()
+
     category_id = request.args.get('category_id')
     mood = request.args.get('mood')
 
